@@ -11,9 +11,14 @@ module.exports.createTask = async (req, res, next) => {
     }
 }
 
-module.exports.getTask = () => {
+module.exports.getTask = async (req, res, next) => {
 // отримання конкретної таски
 // /users/:userId/tasks/:taskId
+    try {
+
+    }catch(error){
+        next(error)
+    }
 }
 
 module.exports.getAllUserTasks = async (req, res, next) => {
@@ -31,10 +36,37 @@ module.exports.getAllUserTasks = async (req, res, next) => {
     }
 }
 
-module.exports.updateTask = () => {}
+module.exports.updateTask = async (req, res, next) => {
+    try {
+        const {body, params: {taskId}} = req;
+        // перевірити, чи той юзер, який надіслав запит, є власником таски
+        const [rowCount, updatedTask] = await Task.update({...body}, {
+            where: {
+                id: Number(taskId)
+            },
+            returning: true
+        });
+        res.status(200).send({data: updatedTask});
+    }catch(error){
+        next(error)
+    }
+}
 
-module.exports.deleteTask = () => {
+module.exports.deleteTask = async (req, res, next) => {
     // видалення конкретної таски
+    try {
+        const {params: {taskId}} = req;
+        // перевірити, чи той юзер, який надіслав запит, є власником таски
+        const deleted = await Task.destroy({
+            where: {
+                id: Number(taskId)
+            },
+            returning: true
+        });
+        res.status(200).send({data: deleted});
+    }catch(error){
+        next(error)
+    }
 }
 
 module.exports.countUserTasks = async (req, res, next) => {
