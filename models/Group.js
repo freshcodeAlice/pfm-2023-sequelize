@@ -11,15 +11,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Group.belongsToMany(models.User, {
+        through: 'users_to_groups',
+        foreignKey: 'groupId'
+      });
     }
   }
   Group.init({
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    imagePath: DataTypes.TEXT
+    name: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    description: {
+      type: DataTypes.STRING
+    },
+    imagePath: {
+      type: DataTypes.TEXT
+    }
   }, {
     sequelize,
     modelName: 'Group',
+    tableName: 'groups',
+    underscored: true
   });
   return Group;
 };
