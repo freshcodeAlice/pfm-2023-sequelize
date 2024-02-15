@@ -63,6 +63,13 @@ module.exports.removeUserFromGroup = async (req, res, next) => {
 module.exports.deleteGroup = async (req, res, next) => {
     try {
         // прийняти id групи і видалити її
+        const {params: {groupId}} = req;
+        const deleted = await Group.destroy({
+            where: {
+                id: Number(groupId)
+            }
+        });
+        res.status(204).send({});
     } catch(error) {
         next(error);
     }
