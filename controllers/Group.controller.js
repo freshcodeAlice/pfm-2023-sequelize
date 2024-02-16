@@ -116,3 +116,22 @@ module.exports.countUsersInGroup = async (req, res, next) => {
         next(error)
     }
 }
+
+
+module.exports.createImage = async (req, res, next) => {
+    // оновити сутність групи, додавши imagePath = req.file.filename
+    try {
+        const {file: {filename}, params: {groupId}} = req;
+        const [rowCount, updateGroup] = await Group.update({
+            imagePath: filename
+        }, {
+            where: {
+                id: Number(groupId)
+            },
+            returning: true
+        });
+        res.status(200).send(updateGroup)
+    } catch(error) {
+        next(error)
+    }
+}
